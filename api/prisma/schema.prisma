@@ -11,5 +11,7 @@ datasource db {
 }
 
 model Application {
-   id        Int      @id @default(autoincrement())
+  id        Int    @id @default(autoincrement())
+  firstName String
+  lastName  String
 }

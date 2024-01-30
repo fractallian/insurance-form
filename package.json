@@ -6,7 +6,8 @@
         "start:api": "nodemon --inspect --watch \"api/**/*\" --exec node --require @swc-node/register --require dotenv/config ./api/index.ts",
         "start:client": "vite ./client",
         "start": "concurrently --kill-others \"npm run start:api\" \"npm run start:client\"",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "prisma": "prisma"
     },
     "repository": {
         "type": "git",
@@ -38,5 +39,8 @@
         "prisma": "^5.7.0",
         "typescript": "^5.3.3",
         "vite": "^5.0.8"
+    },
+    "prisma": {
+        "schema": "api/prisma/schema.prisma"
     }
 }
