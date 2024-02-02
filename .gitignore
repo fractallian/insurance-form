@@ -26,3 +26,7 @@ dist-ssr
 *.sw?
 
 *.db-journal
+
+
+# Data
+/api/prisma/dev.db

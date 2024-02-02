@@ -1,6 +1,6 @@
 import { Response, Router } from 'express';
 
-import { Application, Prisma } from '@prisma/client';
+import { Application } from '@prisma/client';
 import * as Controllers from '../controllers/application';
 
 async function handleError<T>(res: Response, fn: () => Promise<T>): Promise<T | undefined> {
@@ -20,8 +20,9 @@ async function handleError<T>(res: Response, fn: () => Promise<T>): Promise<T | 
 const routes = Router();
 
 routes.post('/', async (req, res) => {
-    const params = req.body satisfies Prisma.ApplicationCreateInput;
-    const app = await handleError<Application>(res, () => Controllers.createApplication(params));
+    const app = await handleError<{ id: number; resume: string }>(res, () =>
+        Controllers.createApplication(req.body)
+    );
     app &&
         res.json({
             data: app,
@@ -37,16 +38,27 @@ routes.get('/:id', async (req, res) => {
         });
 });
 
-routes.put('/:id', (req, res) => {
-    res.json({
-        message: `Update insurance application with id ${req.params.id}`,
-    });
+routes.put('/:id', async (req, res) => {
+    const { id } = req.params satisfies { id: string };
+    const app = await handleError<Application>(res, async () =>
+        Controllers.updateApplication(Number(id), req.body)
+    );
+    app &&
+        res.json({
+            data: app,
+        });
 });
 
-routes.post('/:id/submit', (req, res) => {
-    res.json({
-        message: `Submit insurance application with id ${req.params.id}`,
-    });
+routes.post('/:id/submit', async (req, res) => {
+    const { id } = req.params satisfies { id: string };
+    const app = await handleError<Application | { errors: Record<string, string[]> }>(
+        res,
+        async () => Controllers.submitApplication(Number(id))
+    );
+    app &&
+        res.json({
+            data: app,
+        });
 });
 
 export default routes;
