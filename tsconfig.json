@@ -8,8 +8,9 @@
         "skipLibCheck": true,
         "sourceMap": true,
         "strict": true,
-        "target": "ES2020"
+        "target": "ES2022",
+        "typeRoots": ["shared"]
     },
-    "include": ["api/**/*", "client/vite.config.ts"],
+    "include": ["api/**/*", "client/vite.config.ts", "shared"],
     "references": [{ "path": "./tsconfig.client.json" }]
 }

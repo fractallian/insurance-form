@@ -7,7 +7,6 @@ export const validateApplicationField = (key: string, value?: string): Validatio
             return numeric('zipCode', value);
         case 'dateOfBirth':
             if (!value) return { validValue: value };
-            console.log(typeof value);
             const timestamp = Date.parse(value);
             if (Number.isNaN(timestamp)) {
                 return {
