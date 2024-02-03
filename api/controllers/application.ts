@@ -55,7 +55,7 @@ function validateApplication(app: Application & { vehicles: Vehicle[] }) {
 
 export async function submitApplication(
     id: number
-): Promise<{ errors: Record<string, string[]>; price?: number }> {
+): Promise<{ errors?: Record<string, string[]>; price?: number }> {
     const app = await db.application.findFirst({ where: { id }, include: { vehicles: true } });
     if (!app) throw 'Missing Application';
 
@@ -66,6 +66,7 @@ export async function submitApplication(
             data: { submittedAt: app.submittedAt.toISOString() },
             where: { id },
         });
+        return { price: Math.round(Math.random() * 1000) };
     }
-    return { errors: errors || {}, price: Math.round(Math.random() * 1000) };
+    return { errors };
 }

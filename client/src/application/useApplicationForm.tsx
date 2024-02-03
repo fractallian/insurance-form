@@ -48,7 +48,8 @@ export const useApplicationForm = () => {
     const isValid = !hasErrors(validationErrors);
 
     const setVehicles = (vehicles: VehicleDto[]) => {
-        console.log({ ...validData, vehicles });
+        const { errors: appErrors } = validateApplicationComplete(validData);
+        setValidationErrors({ ...validationErrors, vehicles: appErrors?.vehicles });
         setValidData({ ...validData, vehicles });
     };
 
