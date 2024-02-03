@@ -6,11 +6,15 @@ import VehicleForm from './VehicleForm';
 interface ApplicationVehiclesFormProps {
     vehicles: VehicleDto[];
     setVehicles: (vehicles: VehicleDto[]) => void;
+    errors: Record<string, string[]>;
+    setErrors: (errors: Record<string, string[]>) => void;
 }
 
 export default function ApplicationVehiclesForm({
     vehicles,
     setVehicles,
+    errors,
+    setErrors,
 }: ApplicationVehiclesFormProps) {
     const setVehicle = (index: number, vehicle: VehicleDto) => {
         const allVehicles: VehicleDto[] = vehicles.with(index, vehicle);
@@ -22,25 +26,46 @@ export default function ApplicationVehiclesForm({
         setVehicles([...vehicles, ...[{}]]);
     };
 
+    const setVehicleErrors = (index: number, errors: Record<string, string[]>) => {
+        // Object.entries(errors).forEach(([field, errs]) => {
+        //     if (errs) {
+        //         const key = `vehicles.${index}.${field}`;
+        //         setErrors({ ...errors, ...{ [key]: errs } });
+        //     }
+        // });
+    };
+
     return (
         <>
             <h2>Vehicles</h2>
+            <div className="text-red-600">{errors?.vehicles?.[0]}</div>
             {vehicles?.map((v, i) => (
-                <EditVehicleForm key={i} vehicle={v} setVehicle={(v) => setVehicle(i, v)} />
+                <EditVehicleForm
+                    key={i}
+                    index={i}
+                    vehicle={v}
+                    setVehicle={(v) => setVehicle(i, v)}
+                    errors={errors}
+                    setErrors={setErrors}
+                />
             ))}
-            <button onClick={addVehicle}>Add Vehicle</button>
+            <div className="col-span-2">
+                <button onClick={addVehicle}>Add Vehicle</button>
+            </div>
         </>
     );
 }
 
 interface EditVehicleFormProps {
     vehicle: VehicleDto;
+    index: number;
     setVehicle: (vehicle: VehicleDto) => void;
+    errors: Record<string, string[]>;
+    setErrors: (errors: Record<string, string[]>) => void;
 }
 
-function EditVehicleForm({ vehicle, setVehicle }: EditVehicleFormProps) {
+function EditVehicleForm({ vehicle, index, setVehicle, errors, setErrors }: EditVehicleFormProps) {
     const [formData, setFormData] = useState<FormData>({});
-    const [errors, setErrors] = useState({});
 
     useEffect(() => {
         setFormData(
@@ -52,20 +77,29 @@ function EditVehicleForm({ vehicle, setVehicle }: EditVehicleFormProps) {
     }, [vehicle]);
 
     const onFieldChange = (name: string, value?: string) => {
-        const { errors, validValue } = validateVehicleField(name, value);
+        const { errors: fieldErrors, validValue } = validateVehicleField(name, value);
+
         setErrors({
             ...errors,
-            ...{ [name]: errors?.[name] || undefined },
+            ...{ [`vehicles.${index}.${name}`]: fieldErrors?.[name] || [] },
         });
+
         const newVehicle = { ...formData, ...{ [name]: value } };
         setFormData(newVehicle);
 
         const newValidVehicle = { ...vehicle, ...{ [name]: validValue } };
-        if (!errors) {
+        if (!fieldErrors) {
             setVehicle(newValidVehicle);
         }
         return { errors, validValue };
     };
 
-    return <VehicleForm formData={formData} onFieldChange={onFieldChange} errors={errors} />;
+    return (
+        <VehicleForm
+            formData={formData}
+            onFieldChange={onFieldChange}
+            errors={errors}
+            index={index}
+        />
+    );
 }

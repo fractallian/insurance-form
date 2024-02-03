@@ -1,4 +1,4 @@
-type FormPrimitive = string | undefined;
+export type FormPrimitive = string | undefined;
 
 export type FormData = Record<string, FormPrimitive>;
 

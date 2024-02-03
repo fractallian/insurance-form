@@ -5,6 +5,7 @@ export * from './validation';
 export interface CreateApplicationDto {
     firstName?: string;
     lastName?: string;
+    dateOfBirth?: string;
     street?: string;
     city?: string;
     state?: string;

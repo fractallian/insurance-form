@@ -14,7 +14,7 @@ model Application {
   id          Int       @id @default(autoincrement())
   firstName   String?
   lastName    String?
-  dateOfBirth DateTime?
+  dateOfBirth String?
   street      String?
   city        String?
   state       String?

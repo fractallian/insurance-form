@@ -1,83 +1,31 @@
 import { type FormProps } from '../FormData';
-import ApplicationVehiclesForm from './ApplicationVehiclesForm';
+import FormField from '../FormField';
 
 export default function ApplicationForm({ formData, onFieldChange, errors }: FormProps) {
-    const { firstName, lastName, street, city, state, zipCode, dateOfBirth } = formData;
+    const field = (name: string, label: string, type?: string) => {
+        return (
+            <FormField
+                key={name}
+                name={name}
+                label={label}
+                value={formData[name]}
+                errors={errors}
+                onChange={onFieldChange}
+                type={type}
+            />
+        );
+    };
 
     return (
-        <div className="grid">
-            <pre>{errors && JSON.stringify(errors, null, 2)}</pre>
-            <br />
-            <label className="grid-row">
-                First Name
-                <input
-                    id="firstName"
-                    type="text"
-                    onChange={(e) => onFieldChange('firstName', e.target.value)}
-                    value={firstName || ''}
-                />
-            </label>
-            <br />
-            <label>
-                Last Name
-                <input
-                    id="lastName"
-                    type="text"
-                    onChange={(e) => onFieldChange('lastName', e.target.value)}
-                    value={lastName || ''}
-                />
-            </label>
-            <br />
-            <label>
-                Date of Birth
-                <input
-                    id="dateOfBirth"
-                    type="date"
-                    onChange={(e) => onFieldChange('dateOfBirth', e.target.value)}
-                    value={dateOfBirth || ''}
-                />
-            </label>
-            <br />
-            <h2>Address</h2>
-            <label>
-                Street
-                <input
-                    id="street"
-                    type="text"
-                    onChange={(e) => onFieldChange('street', e.target.value)}
-                    value={street || ''}
-                />
-            </label>
-            <br />
-            <label>
-                City
-                <input
-                    id="city"
-                    type="text"
-                    onChange={(e) => onFieldChange('city', e.target.value)}
-                    value={city || ''}
-                />
-            </label>
-            <br />
-            <label>
-                State
-                <input
-                    id="state"
-                    type="text"
-                    onChange={(e) => onFieldChange('state', e.target.value)}
-                    value={state || ''}
-                />
-            </label>
-            <br />
-            <label>
-                Zip Code
-                <input
-                    id="zipCode"
-                    type="text"
-                    onChange={(e) => onFieldChange('zipCode', e.target.value)}
-                    value={zipCode || ''}
-                />
-            </label>
-        </div>
+        <>
+            {field('firstName', 'First Name')}
+            {field('lastName', 'Last Name')}
+            {field('dateOfBirth', 'Date of Birth', 'date')}
+            <h2 className="col-span-2">Address</h2>
+            {field('street', 'Street')}
+            {field('city', 'City')}
+            {field('state', 'State')}
+            {field('zipCode', 'Zip Code')}
+        </>
     );
 }

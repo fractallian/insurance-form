@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { CreateApplicationDto, VehicleDto } from '../../../shared';
-import { validateApplicationField } from '../../../shared';
+import { CreateApplicationDto, VehicleDto, validateApplicationField } from '../../../shared';
+import { validateApplicationComplete } from '../../../shared/validateApplicationComplete';
 import { FormData } from '../FormData';
 import { apiUrl } from '../apiUrl';
 
@@ -48,8 +48,28 @@ export const useApplicationForm = () => {
     const isValid = !hasErrors(validationErrors);
 
     const setVehicles = (vehicles: VehicleDto[]) => {
+        console.log({ ...validData, vehicles });
         setValidData({ ...validData, vehicles });
     };
 
-    return { isValid, formData, validData, validationErrors, onFieldChange, setVehicles };
+    const validateIsComplete = () => {
+        const { errors } = validateApplicationComplete(validData);
+        if (errors) {
+            setValidationErrors(errors);
+            console.error(errors);
+            return false;
+        }
+        return true;
+    };
+
+    return {
+        isValid,
+        formData,
+        validData,
+        validationErrors,
+        onFieldChange,
+        setVehicles,
+        validateIsComplete,
+        setValidationErrors,
+    };
 };

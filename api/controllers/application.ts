@@ -1,6 +1,6 @@
-import { Application, Prisma } from '@prisma/client';
+import { Application, Prisma, Vehicle } from '@prisma/client';
 import { CreateApplicationDto } from '../../shared';
-import { validateApplicationField } from '../../shared/validateApplicationField';
+import { validateApplicationComplete } from '../../shared/validateApplicationComplete';
 import db from '../db';
 
 // API docs
@@ -48,20 +48,14 @@ export async function updateApplication(
     return app;
 }
 
-function validateApplication(app: Application) {
-    const errors: Record<string, string[]> = {};
-    for (const [key, value] of Object.entries(app)) {
-        const result = validateApplicationField(key, value?.toString() || undefined);
-        if (result.errors) {
-            errors[key] = [...(errors[key] || []), ...(result.errors[key] || [])];
-        }
-    }
-    return { isValid: !Object.keys(errors).length, errors };
+function validateApplication(app: Application & { vehicles: Vehicle[] }) {
+    const { errors } = validateApplicationComplete(app as CreateApplicationDto);
+    return { isValid: !Object.keys(errors || {}).length, errors };
 }
 
 export async function submitApplication(
     id: number
-): Promise<Application | { errors: Record<string, string[]> }> {
+): Promise<{ errors: Record<string, string[]>; price?: number }> {
     const app = await db.application.findFirst({ where: { id }, include: { vehicles: true } });
     if (!app) throw 'Missing Application';
 
@@ -72,7 +66,6 @@ export async function submitApplication(
             data: { submittedAt: app.submittedAt.toISOString() },
             where: { id },
         });
-        return app;
     }
-    return { errors };
+    return { errors: errors || {}, price: Math.round(Math.random() * 1000) };
 }

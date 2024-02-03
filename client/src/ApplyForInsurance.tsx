@@ -6,8 +6,14 @@ import ApplicationVehiclesForm from './application/ApplicationVehiclesForm';
 import { useApplicationForm } from './application/useApplicationForm';
 
 export default function ApplyForInsurance() {
-    const { formData, validData, validationErrors, onFieldChange, setVehicles } =
-        useApplicationForm();
+    const {
+        formData,
+        validData,
+        validationErrors,
+        onFieldChange,
+        setVehicles,
+        setValidationErrors,
+    } = useApplicationForm();
     const navigate = useNavigate();
 
     const { mutate: startApplication } = useMutation({
@@ -32,13 +38,17 @@ export default function ApplyForInsurance() {
 
     return (
         <>
-            <form>
+            <form className="m-10">
                 <h1>Initial Data</h1>
-                <ApplicationForm {...{ formData, onFieldChange, errors: validationErrors }} />
-                <ApplicationVehiclesForm
-                    vehicles={validData.vehicles || []}
-                    setVehicles={setVehicles}
-                />
+                <div className="grid grid-cols-2 gap-2">
+                    <ApplicationForm {...{ formData, onFieldChange, errors: validationErrors }} />
+                    <ApplicationVehiclesForm
+                        vehicles={validData.vehicles || []}
+                        setVehicles={setVehicles}
+                        errors={validationErrors}
+                        setErrors={setValidationErrors}
+                    />
+                </div>
                 <button onClick={onButtonClick}>Start Application</button>
             </form>
         </>
