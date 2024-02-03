@@ -10,14 +10,6 @@ clone the repository then:
 
 `npm run prisma generate`
 
-## Run
-
-`npm run start:api`
-
-`npm run start:client`
-
-App will be running at http://localhost:5173
-
 # This Repository
 
 This is a skeleton repository that you can use to complete the take home challenge. It provides some
